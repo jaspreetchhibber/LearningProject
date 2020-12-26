@@ -40,7 +40,4 @@
   <ItemGroup>
     <ProjectReference Include="..\CoreOSR.Core.Shared\CoreOSR.Core.Shared.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Employee\" />
-  </ItemGroup>
 </Project>

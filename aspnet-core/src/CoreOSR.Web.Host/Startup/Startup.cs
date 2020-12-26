@@ -37,6 +37,7 @@ using CoreOSR.Configure;
 using CoreOSR.Schemas;
 using CoreOSR.Web.HealthCheck;
 using HealthChecksUISettings = HealthChecks.UI.Configuration.Settings;
+using Microsoft.IdentityModel.Logging;
 
 namespace CoreOSR.Web.Startup
 {

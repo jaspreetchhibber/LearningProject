@@ -16,7 +16,7 @@ using CoreOSR.Configuration;
 using CoreOSR.Identity;
 using CoreOSR.Web.Common;
 using CoreOSR.Web.HealthCheck;
-
+using Microsoft.IdentityModel.Logging;
 
 namespace CoreOSR.Web.Public.Startup
 {
