@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import DataSource from 'devextreme/data/data_source';
 import { Employee,DatagridService } from './datagrid.service';
 
 @Component({
@@ -11,8 +10,8 @@ import { Employee,DatagridService } from './datagrid.service';
 export class DatagridComponent implements OnInit {
   employees: Employee[] = [];
   selectedEmployee: Employee;
+  events: Array<string> = [];
 
-  dataSource: DataSource;
     collapsed = false;
     contentReady = (e) => {
         if(!this.collapsed) {
@@ -25,7 +24,6 @@ export class DatagridComponent implements OnInit {
     }
 
     constructor(service: DatagridService) {
-        this.dataSource = service.getDataSource();
         this.employees = service.getEmployees();
         this.selectEmployee = this.selectEmployee.bind(this);
     }
@@ -35,6 +33,25 @@ export class DatagridComponent implements OnInit {
               this.selectedEmployee = employee;
           }
       });
+    }
+
+    logEvent(eventName) {
+      debugger;
+      this.events.unshift(eventName);
+    }
+    
+    refreshEmployeeGrid(){
+      //this.employees = service.getEmployees();
+      this.selectEmployee = this.selectEmployee.bind(this);
+    }
+    OnSavingEmployee(){
+      debugger;
+    }
+    OnUpdatingEmployee(){
+
+    }
+    OnRemovingEmployee(){
+
     }
   ngOnInit() {
   }

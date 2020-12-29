@@ -1,25 +1,19 @@
-import { Injectable } from '@angular/core';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import 'devextreme/data/odata/store';
-import DataSource from 'devextreme/data/data_source';
+import { Observable } from 'rxjs';
+export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatagridService {
-
-  constructor() { }
-
-  getDataSource() {
-    return new DataSource({
-        store: {
-            type: "odata",
-            url: "https://js.devexpress.com/Demos/SalesViewer/odata/DaySaleDtoes",
-            beforeSend: function(request) {
-                request.params.startDate = "2018-05-10";
-                request.params.endDate = "2018-05-15";
-            }
-        }
-    });
+  private http: HttpClient;
+  private baseUrl: string;
+  
+  constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    this.http = http;
+    this.baseUrl = baseUrl ? baseUrl : "";
   }
 
   getEmployees(): Employee[] {
