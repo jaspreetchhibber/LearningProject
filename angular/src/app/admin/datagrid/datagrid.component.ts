@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import CustomStore from 'devextreme/data/custom_store';
 import { Employee,DatagridService } from './datagrid.service';
+import { EmployeeModel } from './Model/employeeModel';
 
 @Component({
   selector: 'app-datagrid',
@@ -11,6 +13,7 @@ export class DatagridComponent implements OnInit {
   employees: Employee[] = [];
   selectedEmployee: Employee;
   events: Array<string> = [];
+  dataSource: any;
 
     collapsed = false;
     contentReady = (e) => {
@@ -23,9 +26,27 @@ export class DatagridComponent implements OnInit {
         return { text: parseInt(pointsInfo.originalValue) + "%" };
     }
 
-    constructor(service: DatagridService) {
+    constructor(public service: DatagridService) {
         this.employees = service.getEmployees();
         this.selectEmployee = this.selectEmployee.bind(this);
+        this.dataSource = new CustomStore({
+          key: "EmployeeID",
+          load: () => service.getEmployees(),//this.sendRequest(URL + "/Orders"),
+          insert: (values) => 
+          this.service.saveEmployee(values),
+          //this.service.saveEmployee(JSON.stringify(values)),
+          // this.sendRequest(URL + "/InsertOrder", "POST", {
+          //     values: JSON.stringify(values)
+          // }),
+          // update: (key, values) => this.sendRequest(URL + "/UpdateOrder", "PUT", {
+          //     key: key,
+          //     values: JSON.stringify(values)
+          // }),
+          // remove: (key) => this.sendRequest(URL + "/DeleteOrder", "DELETE", {
+          //     key: key
+          // })
+        })
+        
     }
     selectEmployee(e) {
       e.component.byKey(e.currentSelectedRowKeys[0]).done(employee => {
@@ -46,13 +67,47 @@ export class DatagridComponent implements OnInit {
     }
     OnSavingEmployee(){
       debugger;
+      //this.service.saveEmployee(this.formData);
     }
+    
     OnUpdatingEmployee(){
 
     }
     OnRemovingEmployee(){
 
     }
+
+    // sendRequest(url: string, method: string = "GET", data: any = {}): any {
+  //     //this.logRequest(method, url, data);
+
+  //     let httpParams = new HttpParams({ fromObject: data });
+  //     let httpOptions = { withCredentials: true, body: httpParams };
+  //     let result;
+
+  //     switch(method) {
+  //         case "GET":
+  //             result = this.http.get(url, httpOptions);
+  //             break;
+  //         case "PUT":
+  //             result = this.http.put(url, httpParams, httpOptions);
+  //             break;
+  //         case "POST":
+  //             result = this.http.post(url, httpParams, httpOptions);
+  //             break;
+  //         case "DELETE":
+  //             result = this.http.delete(url, httpOptions);
+  //             break;
+  //     }
+
+  //     return result
+  //         .toPromise()
+  //         .then((data: any) => {
+  //             return method === "GET" ? data.data : data;
+  //         })
+  //         .catch(e => {
+  //             throw e && e.error && e.error.Message;
+  //         });
+  // }
   ngOnInit() {
   }
 

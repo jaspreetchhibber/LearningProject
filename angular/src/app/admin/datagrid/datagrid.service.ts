@@ -1,7 +1,9 @@
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient,HttpHeaders,HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import 'devextreme/data/odata/store';
-import { Observable } from 'rxjs';
+import { Observable,throwError as _observableThrow, of as _observableOf  } from 'rxjs';
+import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
+import { EmployeeModel } from './Model/employeeModel';
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable({
@@ -10,6 +12,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export class DatagridService {
   private http: HttpClient;
   private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
   
   constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
     this.http = http;
@@ -17,10 +20,112 @@ export class DatagridService {
   }
 
   getEmployees(): Employee[] {
+    debugger;
     return employees;
   }
+
+      /**
+     * @param model (optional) 
+     * @return Success
+     */
+    saveEmployee(model: EmployeeModel | null | undefined): Observable<EmployeeResultModel> {
+      //saveEmployee(model: any | null | undefined): Observable<EmployeeResultModel> {
+        debugger;
+      let url_ = this.baseUrl + "/api/Home/AddEmployee";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(model);
+
+      let options_ : any = {
+          body: content_,
+          observe: "response",
+          responseType: "blob",
+          headers: new HttpHeaders({
+              "Content-Type": "application/json", 
+              "Accept": "application/json"
+          })
+      };
+
+      return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+          return this.processSaveEmployee(response_);
+      })).pipe(_observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+              try {
+                  return this.processSaveEmployee(<any>response_);
+              } catch (e) {
+                  return <Observable<EmployeeResultModel>><any>_observableThrow(e);
+              }
+          } else
+              return <Observable<EmployeeResultModel>><any>_observableThrow(response_);
+      }));
+  }
+  protected processSaveEmployee(response: HttpResponseBase): Observable<EmployeeResultModel> {
+    const status = response.status;
+    const responseBlob = 
+        response instanceof HttpResponse ? response.body : 
+        (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+    let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+    if (status === 200) {
+        return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = EmployeeResultModel.fromJS(resultData200);
+        return _observableOf(result200);
+        }));
+    } else if (status !== 200 && status !== 204) {
+        return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }));
+    }
+    return _observableOf<EmployeeResultModel>(<any>null);
+}
+}
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+  if (result !== null && result !== undefined)
+      return _observableThrow(result);
+  else
+      return _observableThrow(new ApiException(message, status, response, headers, null));
 }
 
+function blobToText(blob: any): Observable<string> {
+  return new Observable<string>((observer: any) => {
+      if (!blob) {
+          observer.next("");
+          observer.complete();
+      } else {
+          let reader = new FileReader(); 
+          reader.onload = event => { 
+              observer.next((<any>event.target).result);
+              observer.complete();
+          };
+          reader.readAsText(blob); 
+      }
+  });
+}
+export class ApiException extends Error {
+  message: string;
+  status: number; 
+  response: string; 
+  headers: { [key: string]: any; };
+  result: any; 
+
+  constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+      super();
+
+      this.message = message;
+      this.status = status;
+      this.response = response;
+      this.headers = headers;
+      this.result = result;
+  }
+
+  protected isApiException = true;
+
+  static isApiException(obj: any): obj is ApiException {
+      return obj.isApiException === true;
+  }
+}
 
 
 
@@ -197,3 +302,46 @@ const employees: Employee[] = [{
   "Notes": "Brett has a BA degree in English from St. Lawrence College.  He is fluent in French and German.",
   "ReportsTo": 5
 }];
+
+export interface IEmployeeResultModel {
+  tenancyName: string;
+}
+
+export class EmployeeResultModel implements IEmployeeResultModel {
+  //state!: TenantAvailabilityState | undefined;
+  tenantId!: number | undefined;
+  serverRootAddress!: string | undefined;
+
+  constructor(data?: IEmployeeResultModel) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+  tenancyName: string;
+
+  init(data?: any) {
+      if (data) {
+          //this.state = data["state"];
+          this.tenantId = data["tenantId"];
+          this.serverRootAddress = data["serverRootAddress"];
+      }
+  }
+
+  static fromJS(data: any): EmployeeResultModel {
+      data = typeof data === 'object' ? data : {};
+      let result = new EmployeeResultModel();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      //data["state"] = this.state;
+      data["tenantId"] = this.tenantId;
+      data["serverRootAddress"] = this.serverRootAddress;
+      return data; 
+  }
+}

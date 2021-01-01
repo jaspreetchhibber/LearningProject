@@ -31,6 +31,7 @@ namespace CoreOSR.EntityFrameworkCore
         public virtual DbSet<Invoice> Invoices { get; set; }
 
         public virtual DbSet<PersistedGrantEntity> PersistedGrants { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
 
         public CoreOSRDbContext(DbContextOptions<CoreOSRDbContext> options)
             : base(options)

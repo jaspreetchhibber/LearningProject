@@ -1,19 +1,13 @@
 
 <div id="app-container">
-<dx-data-grid id="dataGrid" [dataSource]="employees"
+<dx-data-grid id="dataGrid" [dataSource]="dataSource"  
+[repaintChangesOnly]="true"
 keyExpr="EmployeeID"
 [allowColumnReordering]="true"
 [columnAutoWidth]="true"
 (onSelectionChanged)="selectEmployee($event)"
-(onSaving)="OnSavingEmployee()"
-(onSaved)="refreshEmployeeGrid()"
-(onRowUpdating)="OnUpdatingEmployee('RowUpdating')"
-(onRowUpdated)="refreshEmployeeGrid()"
-(onRowRemoving)="OnRemovingEmployee('RowRemoving')"
-(onRowRemoved)="refreshEmployeeGrid()"
 >
-    <dxi-column
-    dataField="FullName"
+    <dxi-column dataField="FullName"
     [fixed]="true">
         <dxi-validation-rule type="required"></dxi-validation-rule>
     </dxi-column>
