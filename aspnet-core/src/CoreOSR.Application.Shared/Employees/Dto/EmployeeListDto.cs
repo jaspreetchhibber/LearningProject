@@ -1,13 +1,13 @@
-﻿using CoreOSR.Dto;
+﻿using Abp.Application.Services.Dto;
+using Abp.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CoreOSR.Employee.Dto
+namespace CoreOSR.Employees.Dto
 {
-    public class EmployeeInput : PagedAndFilteredInputDto
+    public class EmployeeListDto : EntityDto<long>
     {
-        public int EmployeeId { get; set; }
         public string FullName { get; set; }
 
         public string Position { get; set; }

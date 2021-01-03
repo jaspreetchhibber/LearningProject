@@ -1,20 +1,13 @@
-﻿using Abp.Domain.Entities;
-using Abp.Domain.Entities.Auditing;
+﻿using CoreOSR.Dto;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace CoreOSR.Employee
+namespace CoreOSR.Employees.Dto
 {
-    [Table("Employee")]
-    public class Employee : Entity<long>
+    public class EmployeeInput //: PagedAndFilteredInputDto
     {
-        protected Employee()
-        {
-
-        }
-        public int EmployeeId { get; set; }
+        public int Id { get; set; }
         public string FullName { get; set; }
 
         public string Position { get; set; }

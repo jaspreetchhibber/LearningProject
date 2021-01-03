@@ -11,6 +11,7 @@ using CoreOSR.MultiTenancy;
 using CoreOSR.MultiTenancy.Accounting;
 using CoreOSR.MultiTenancy.Payments;
 using CoreOSR.Storage;
+using CoreOSR.Employees;
 
 namespace CoreOSR.EntityFrameworkCore
 {

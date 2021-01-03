@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import CustomStore from 'devextreme/data/custom_store';
 import { Employee,DatagridService } from './datagrid.service';
-import { EmployeeModel } from './Model/employeeModel';
+//import { EmployeeModel } from './Model/employeeModel';
 
 @Component({
   selector: 'app-datagrid',
@@ -27,17 +27,13 @@ export class DatagridComponent implements OnInit {
     }
 
     constructor(public service: DatagridService) {
-        this.employees = service.getEmployees();
+        //this.employees = service.getEmployees();
         this.selectEmployee = this.selectEmployee.bind(this);
         this.dataSource = new CustomStore({
-          key: "EmployeeID",
-          load: () => service.getEmployees(),//this.sendRequest(URL + "/Orders"),
+          key: "Id",
+          load: () => service.getEmployees(),
           insert: (values) => 
-          this.service.saveEmployee(values),
-          //this.service.saveEmployee(JSON.stringify(values)),
-          // this.sendRequest(URL + "/InsertOrder", "POST", {
-          //     values: JSON.stringify(values)
-          // }),
+          this.service.saveEmployee(values),          
           // update: (key, values) => this.sendRequest(URL + "/UpdateOrder", "PUT", {
           //     key: key,
           //     values: JSON.stringify(values)

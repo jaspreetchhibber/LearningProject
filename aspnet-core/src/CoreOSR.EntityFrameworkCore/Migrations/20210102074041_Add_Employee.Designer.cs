@@ -4,14 +4,16 @@ using CoreOSR.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreOSR.Migrations
 {
     [DbContext(typeof(CoreOSRDbContext))]
-    partial class CoreOSRDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210102074041_Add_Employee")]
+    partial class Add_Employee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1133,6 +1135,8 @@ namespace CoreOSR.Migrations
                     b.Property<string>("City");
 
                     b.Property<string>("Country");
+
+                    b.Property<int>("EmployeeId");
 
                     b.Property<string>("Extension");
 

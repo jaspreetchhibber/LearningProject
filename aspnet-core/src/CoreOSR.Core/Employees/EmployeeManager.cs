@@ -1,14 +1,16 @@
-﻿using Abp.Domain.Repositories;
+﻿using Abp.Application.Services.Dto;
+using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreOSR.Employee
+namespace CoreOSR.Employees
 {
-    public class EmployeeManager: CoreOSRDomainServiceBase,IEmployeeManager
+    public class EmployeeManager : CoreOSRDomainServiceBase, IEmployeeManager
     {
         private readonly IRepository<Employee, long> _employeeRepository;
 
@@ -21,9 +23,14 @@ namespace CoreOSR.Employee
         {
             //using (CurrentUnitOfWork.SetTenantId(employee.TenantId))
             //{
-                _employeeRepository.Insert(employee);
-                await CurrentUnitOfWork.SaveChangesAsync();
+            _employeeRepository.Insert(employee);
+            await CurrentUnitOfWork.SaveChangesAsync();
             //}
+        }
+        public async Task<IQueryable<Employee>> GetEmployees()
+        {
+            var query = _employeeRepository.GetAll();
+            return query;
         }
     }
 }

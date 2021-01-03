@@ -1,9 +1,12 @@
 import { HttpClient,HttpHeaders,HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { AppConsts } from '@shared/AppConsts';
 import 'devextreme/data/odata/store';
 import { Observable,throwError as _observableThrow, of as _observableOf  } from 'rxjs';
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
-import { EmployeeModel } from './Model/employeeModel';
+// import { EmployeeModel } from './Model/employeeModel';
+import { APP_BASE_HREF } from '@angular/common';
+//import { API_BASE_URL } from '@shared/service-proxies/service-proxies';
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable({
@@ -15,29 +18,30 @@ export class DatagridService {
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
   
   constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    debugger;
     this.http = http;
     this.baseUrl = baseUrl ? baseUrl : "";
   }
 
-  getEmployees(): Employee[] {
-    debugger;
-    return employees;
-  }
+  // getEmployees(): Employee[] {
+  //   debugger;
+  //   return employees;
+  // }
 
       /**
      * @param model (optional) 
      * @return Success
      */
     saveEmployee(model: EmployeeModel | null | undefined): Observable<EmployeeResultModel> {
-      //saveEmployee(model: any | null | undefined): Observable<EmployeeResultModel> {
         debugger;
-      let url_ = this.baseUrl + "/api/Home/AddEmployee";
+        var baseurl=this.baseUrl;
+      let url_ = AppConsts.remoteServiceBaseUrl + "/api/services/app/Employee/AddEmployee";
       url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(model);
 
       let options_ : any = {
-          body: content_,
+          //body: content_,
           observe: "response",
           responseType: "blob",
           headers: new HttpHeaders({
@@ -47,8 +51,10 @@ export class DatagridService {
       };
 
       return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        debugger;
           return this.processSaveEmployee(response_);
       })).pipe(_observableCatch((response_: any) => {
+        debugger;
           if (response_ instanceof HttpResponseBase) {
               try {
                   return this.processSaveEmployee(<any>response_);
@@ -58,7 +64,7 @@ export class DatagridService {
           } else
               return <Observable<EmployeeResultModel>><any>_observableThrow(response_);
       }));
-  }
+    }
   protected processSaveEmployee(response: HttpResponseBase): Observable<EmployeeResultModel> {
     const status = response.status;
     const responseBlob = 
@@ -79,6 +85,57 @@ export class DatagridService {
         }));
     }
     return _observableOf<EmployeeResultModel>(<any>null);
+  }
+
+getEmployees(): Observable<PagedResultDtoOfEmployeeListDto> {
+  debugger;
+  let url_ = AppConsts.remoteServiceBaseUrl + "/api/services/app/Employee/GetEmployees";
+  url_ = url_.replace(/[?&]$/, "");
+
+  let options_ : any = {
+      observe: "response",
+      responseType: "blob",
+      headers: new HttpHeaders({
+          "Accept": "application/json"
+      })
+  };
+
+  return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+    debugger;
+      return this.processGetEmployees(response_);
+  })).pipe(_observableCatch((response_: any) => {    
+  debugger;
+      if (response_ instanceof HttpResponseBase) {
+          try {
+              return this.processGetEmployees(<any>response_);
+          } catch (e) {
+              return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(e);
+          }
+      } else
+          return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(response_);
+  }));
+}
+protected processGetEmployees(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeeListDto> {
+  debugger;
+  const status = response.status;
+  const responseBlob = 
+      response instanceof HttpResponse ? response.body : 
+      (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+  let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+  if (status === 200) {
+      return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+      let result200: any = null;
+      let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+      result200 = PagedResultDtoOfEmployeeListDto.fromJS(resultData200);
+      return _observableOf(result200);
+      }));
+  } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+      return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      }));
+  }
+  return _observableOf<PagedResultDtoOfEmployeeListDto>(<any>null);
 }
 }
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
@@ -130,7 +187,7 @@ export class ApiException extends Error {
 
 
 export interface Employee {
-  EmployeeID: Number,
+  Id: Number,
   FullName: String,
   Position: String,
   TitleOfCourtesy: String,
@@ -149,7 +206,7 @@ export interface Employee {
 }
 
 const employees: Employee[] = [{
-  "EmployeeID": 1,
+  "Id": 1,
   "FullName": "Nancy Davolio",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Ms.",
@@ -166,7 +223,7 @@ const employees: Employee[] = [{
   "Notes": "Education includes a BA in psychology from Colorado State University in 1990.  She also completed \"The Art of the Cold Call.\"  Nancy is a member of Toastmasters International.",
   "ReportsTo": 2
 }, {
-  "EmployeeID": 2,
+  "Id": 2,
   "FullName": "Andrew Fuller",
   "Position": "Vice President, Sales",
   "TitleOfCourtesy": "Dr.",
@@ -183,7 +240,7 @@ const employees: Employee[] = [{
   "Notes": "Andrew received his BTS commercial in 1994 and a Ph.D. in international marketing from the University of Dallas in 2001.  He is fluent in French and Italian and reads German.  He joined the company as a sales representative, was promoted to sales manager in January 2012 and to vice president of sales in March 2013.  Andrew is a member of the Sales Management Roundtable, the Seattle Chamber of Commerce, and the Pacific Rim Importers Association.",
   "ReportsTo": null
 }, {
-  "EmployeeID": 3,
+  "Id": 3,
   "FullName": "Janet Leverling",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Ms.",
@@ -200,7 +257,7 @@ const employees: Employee[] = [{
   "Notes": "Janet has a BS degree in chemistry from Boston College (2004).  She has also completed a certificate program in food retailing management.  Janet was hired as a sales associate in 2011 and promoted to sales representative in February 2012.",
   "ReportsTo": 2
 }, {
-  "EmployeeID": 4,
+  "Id": 4,
   "FullName": "Margaret Peacock",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Mrs.",
@@ -217,7 +274,7 @@ const employees: Employee[] = [{
   "Notes": "Margaret holds a BA in English literature from Concordia College (1978) and an MA from the American Institute of Culinary Arts (1986).  She was assigned to the London office temporarily from July through November 2012.",
   "ReportsTo": 2
 }, {
-  "EmployeeID": 5,
+  "Id": 5,
   "FullName": "Steven Buchanan",
   "Position": "Sales Manager",
   "TitleOfCourtesy": "Mr.",
@@ -234,7 +291,7 @@ const employees: Employee[] = [{
   "Notes": "Steven Buchanan graduated from St. Andrews University, Scotland, with a BSC degree in 1996.  Upon joining the company as a sales representative in 2012, he spent 6 months in an orientation program at the Seattle office and then returned to his permanent post in London.  He was promoted to sales manager in March 2013.  Mr. Buchanan has completed the courses \"Successful Telemarketing\" and \"International Sales Management.\"  He is fluent in French.",
   "ReportsTo": 2
 }, {
-  "EmployeeID": 6,
+  "Id": 6,
   "FullName": "Michael Suyama",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Mr.",
@@ -251,7 +308,7 @@ const employees: Employee[] = [{
   "Notes": "Michael is a graduate of Sussex University (MA, economics, 2003) and the University of California at Los Angeles (MBA, marketing, 2006). He has also taken the courses \"Multi-Cultural Selling\" and \"Time Management for the Sales Professional.\"  He is fluent in Japanese and can read and write French, Portuguese, and Spanish.",
   "ReportsTo": 5
 }, {
-  "EmployeeID": 7,
+  "Id": 7,
   "FullName": "Robert King",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Mr.",
@@ -268,7 +325,7 @@ const employees: Employee[] = [{
   "Notes": "Robert King served in the Peace Corps and traveled extensively before completing his degree in English at the University of Michigan in 2002, the year he joined the company.  After completing a course entitled \"Selling in Europe,\" he was transferred to the London office in March 2013.",
   "ReportsTo": 5
 }, {
-  "EmployeeID": 8,
+  "Id": 8,
   "FullName": "Laura Callahan",
   "Position": "Inside Sales Coordinator",
   "TitleOfCourtesy": "Ms.",
@@ -285,7 +342,7 @@ const employees: Employee[] = [{
   "Notes": "Laura received a BA in psychology from the University of Washington.  She has also completed a course in business French.  She reads and writes French.",
   "ReportsTo": 2
 }, {
-  "EmployeeID": 9,
+  "Id": 9,
   "FullName": "Brett Wade",
   "Position": "Sales Representative",
   "TitleOfCourtesy": "Mr.",
@@ -344,4 +401,147 @@ export class EmployeeResultModel implements IEmployeeResultModel {
       data["serverRootAddress"] = this.serverRootAddress;
       return data; 
   }
+}
+export class EmployeeModel implements IEmployeeModel {
+  Id!: number | undefined;
+  FullName!: String | undefined;
+  Position!: String | undefined;
+  TitleOfCourtesy!: String | undefined;
+  BirthDate!: String | undefined;
+  HireDate!: String | undefined;
+  Address!: String | undefined;
+  City!: String | undefined;
+  Region!: String | undefined;
+  PostalCode!: String | undefined;
+  Country!: String | undefined;
+  HomePhone!: String | undefined;
+  Extension!: String | undefined;
+  Photo!: String | undefined;
+  Notes!: String | undefined;
+  ReportsTo!: Number | undefined;
+
+  constructor(data?: IEmployeeModel) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(data?: any) {
+      if (data) {
+          this.Id=data["Id"];
+          this.FullName=data["FullName"];
+          this.Position=data["Position"];
+          this.TitleOfCourtesy=data["TitleOfCourtesy"];
+          this.BirthDate=data["BirthDate"];
+          this.HireDate=data["HireDate"];
+          this.Address=data["Address"];
+          this.City=data["City"];
+          this.Region=data["Region"];
+          this.PostalCode=data["PostalCode"];
+          this.Country=data["Country"];
+          this.HomePhone=data["HomePhone"];
+          this.Extension=data["Extension"];
+          this.Photo=data["Photo"];
+          this.Notes=data["Notes"];
+          this.ReportsTo=data["ReportsTo"];
+      }
+  }
+
+  static fromJS(data: any): EmployeeModel {
+      data = typeof data === 'object' ? data : {};
+      let result = new EmployeeModel();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      data["Id"] = this.Id;
+      data["FullName"] = this.FullName;
+      data["Position"] = this.Position;
+      data["TitleOfCourtesy"] = this.TitleOfCourtesy;
+      data["BirthDate"] = this.BirthDate;
+      data["HireDate"] = this.HireDate;
+      data["Address"] = this.Address;
+      data["City"] = this.City;
+      data["Region"] = this.Region;
+      data["PostalCode"] = this.PostalCode;
+      data["Country"] = this.Country;
+      data["HomePhone"] = this.HomePhone;
+      data["Extension"] = this.Extension;
+      data["Photo"] = this.Photo;
+      data["Notes"] = this.Notes;
+      data["ReportsTo"] = this.ReportsTo;
+      return data; 
+  }
+}
+
+export interface IEmployeeModel {
+  Id: number | undefined;
+  FullName: String | undefined;
+  Position: String | undefined;
+  TitleOfCourtesy: String | undefined;
+  BirthDate: String | undefined;
+  HireDate: String | undefined;
+  Address: String | undefined;
+  City: String | undefined;
+  Region: String | undefined;
+  PostalCode: String | undefined;
+  Country: String | undefined;
+  HomePhone: String | undefined;
+  Extension: String | undefined;
+  Photo: String | undefined;
+  Notes: String | undefined;
+  ReportsTo: Number | undefined;
+}
+
+export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmployeeListDto {
+  totalCount!: number | undefined;
+  items!: EmployeeModel[] | undefined;
+
+  constructor(data?: IPagedResultDtoOfEmployeeListDto) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(data?: any) {
+      if (data) {
+          this.totalCount = data["totalCount"];
+          if (Array.isArray(data["items"])) {
+              this.items = [] as any;
+              for (let item of data["items"])
+                  this.items!.push(EmployeeModel.fromJS(item));
+          }
+      }
+  }
+
+  static fromJS(data: any): PagedResultDtoOfEmployeeListDto {
+      data = typeof data === 'object' ? data : {};
+      let result = new PagedResultDtoOfEmployeeListDto();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      data["totalCount"] = this.totalCount;
+      if (Array.isArray(this.items)) {
+          data["items"] = [];
+          for (let item of this.items)
+              data["items"].push(item.toJSON());
+      }
+      return data; 
+  }
+}
+
+export interface IPagedResultDtoOfEmployeeListDto {
+  totalCount: number | undefined;
+  items: EmployeeModel[] | undefined;
 }
