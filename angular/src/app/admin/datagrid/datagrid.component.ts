@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
+import { AppComponentBase } from '@shared/common/app-component-base';
 import CustomStore from 'devextreme/data/custom_store';
 import { Employee,DatagridService } from './datagrid.service';
 //import { EmployeeModel } from './Model/employeeModel';
@@ -9,7 +10,7 @@ import { Employee,DatagridService } from './datagrid.service';
   styleUrls: ['./datagrid.component.css'],
   providers: [DatagridService]
 })
-export class DatagridComponent implements OnInit {
+export class DatagridComponent extends AppComponentBase implements OnInit {
   employees: Employee[] = [];
   selectedEmployee: Employee;
   events: Array<string> = [];
@@ -26,7 +27,9 @@ export class DatagridComponent implements OnInit {
         return { text: parseInt(pointsInfo.originalValue) + "%" };
     }
 
-    constructor(public service: DatagridService) {
+    constructor(public service: DatagridService,
+      injector: Injector) {
+        super(injector);
         //this.employees = service.getEmployees();
         this.selectEmployee = this.selectEmployee.bind(this);
         this.dataSource = new CustomStore({

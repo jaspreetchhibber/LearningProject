@@ -22,6 +22,8 @@ using CoreOSR.Chat;
 using CoreOSR.Chat.Dto;
 using CoreOSR.Editions;
 using CoreOSR.Editions.Dto;
+using CoreOSR.Employees;
+using CoreOSR.Employees.Dto;
 using CoreOSR.Friendships;
 using CoreOSR.Friendships.Cache;
 using CoreOSR.Friendships.Dto;
@@ -132,6 +134,10 @@ namespace CoreOSR
             //OrganizationUnit
             configuration.CreateMap<OrganizationUnit, OrganizationUnitDto>();
 
+
+            //Employee
+            configuration.CreateMap<EmployeeListDto, Employee>().ReverseMap();
+            configuration.CreateMap<EmployeeInput, Employee>().ReverseMap();
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
         }
     }
