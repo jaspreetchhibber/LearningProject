@@ -9,7 +9,9 @@ namespace CoreOSR.Employees
 {
     public interface IEmployeeManager : IDomainService
     {
-        Task CreateEmployeeAsync(Employee employee);
+        Task<long> CreateEmployeeAsync(Employee employee);
         Task<IQueryable<Employee>> GetEmployees();
+        Task<long> UpdateEmployeeAsync(Employee employee);
+        Task<Boolean> DeleteEmployeeAsync(int employeeId);
     }
 }

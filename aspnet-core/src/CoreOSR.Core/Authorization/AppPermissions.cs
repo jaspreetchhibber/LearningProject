@@ -10,7 +10,7 @@
 
         public const string Pages = "Pages";
 
-        public const string Pages_DemoUiComponents= "Pages.DemoUiComponents";
+        public const string Pages_DemoUiComponents = "Pages.DemoUiComponents";
         public const string Pages_Administration = "Pages.Administration";
 
         public const string Pages_Administration_Roles = "Pages.Administration.Roles";
@@ -70,5 +70,9 @@
         public const string Pages_Administration_Host_Settings = "Pages.Administration.Host.Settings";
         public const string Pages_Administration_Host_Dashboard = "Pages.Administration.Host.Dashboard";
 
+        public const string Pages_Datagrid = "Pages.Datagrid";
+        public const string Pages_Datagrid_Create = "Pages.Datagrid.Create";
+        public const string Pages_Datagrid_Edit = "Pages.Datagrid.Edit";
+        public const string Pages_Datagrid_Delete = "Pages.Datagrid.Delete";
     }
 }

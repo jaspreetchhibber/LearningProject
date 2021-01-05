@@ -34,7 +34,7 @@ export class AppNavigationService {
                 new AppMenuItem('Settings', 'Pages.Administration.Tenant.Settings', 'flaticon-settings', '/app/admin/tenantSettings')
             ]),
             new AppMenuItem('DemoUiComponents', 'Pages.DemoUiComponents', 'flaticon-shapes', '/app/admin/demo-ui-components'),
-            new AppMenuItem('DataGrid', 'Pages.DemoUiComponents', 'flaticon-shapes', '/app/admin/datagrid')
+            new AppMenuItem('Datagrid', 'Pages.Datagrid', 'flaticon-shapes', '/app/admin/datagrid')
         ]);
     }
 

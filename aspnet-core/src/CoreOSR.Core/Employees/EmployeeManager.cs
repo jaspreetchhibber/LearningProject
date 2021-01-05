@@ -19,18 +19,58 @@ namespace CoreOSR.Employees
             _employeeRepository = employeeRepository;
         }
         [UnitOfWork]
-        public async Task CreateEmployeeAsync(Employee employee)
+        public async Task<long> CreateEmployeeAsync(Employee employee)
         {
-            //using (CurrentUnitOfWork.SetTenantId(employee.TenantId))
-            //{
-            _employeeRepository.Insert(employee);
-            await CurrentUnitOfWork.SaveChangesAsync();
-            //}
+            try
+            {
+                var result=_employeeRepository.Insert(employee);
+                await CurrentUnitOfWork.SaveChangesAsync();
+                return result.Id;
+            }
+            catch(Exception ex)
+            {
+                return 0;
+            }
         }
         public async Task<IQueryable<Employee>> GetEmployees()
         {
-            var query = _employeeRepository.GetAll();
-            return query;
+            try
+            {
+                var query = _employeeRepository.GetAll();
+                return query;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+        [UnitOfWork]
+        public async Task<long> UpdateEmployeeAsync(Employee employee)
+        {
+            try
+            {
+                var result=_employeeRepository.Update(employee);
+                await CurrentUnitOfWork.SaveChangesAsync();
+                return result.Id;
+            }
+            catch(Exception ex)
+            {
+                return 0;
+            }
+        }
+        [UnitOfWork]
+        public async Task<Boolean> DeleteEmployeeAsync(int employeeId)
+        {
+            try
+            {
+                _employeeRepository.Delete(employeeId);
+                await CurrentUnitOfWork.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

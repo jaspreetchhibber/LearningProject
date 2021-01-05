@@ -42,7 +42,7 @@ import { DatagridComponent } from './datagrid/datagrid.component';
                     { path: 'demo-ui-components', component: DemoUiComponentsComponent, data: { permission: 'Pages.DemoUiComponents' } },
                     { path: 'install', component: InstallComponent },
                     { path: 'ui-customization', component: UiCustomizationComponent },
-                    { path: 'datagrid', component: DatagridComponent, data: { permission: 'Pages.DemoUiComponents' } },
+                    { path: 'datagrid', component: DatagridComponent, data: { permission: 'Pages.Datagrid' } },
                 ]
             }
         ])

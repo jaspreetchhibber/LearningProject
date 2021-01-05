@@ -35,15 +35,11 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
         this.dataSource = new CustomStore({
           key: "Id",
           load: () => service.getEmployees(),
-          insert: (values) => 
-          this.service.saveEmployee(values),          
-          // update: (key, values) => this.sendRequest(URL + "/UpdateOrder", "PUT", {
-          //     key: key,
-          //     values: JSON.stringify(values)
-          // }),
-          // remove: (key) => this.sendRequest(URL + "/DeleteOrder", "DELETE", {
-          //     key: key
-          // })
+          insert: (values) => this.service.saveEmployee(values),                    
+          update: (key, values) => 
+          this.service.updateEmployee(key,values),
+          remove: (key) => 
+          this.service.deleteEmployee(key),
         })
         
     }

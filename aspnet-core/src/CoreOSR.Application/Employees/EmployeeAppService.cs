@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
+using CoreOSR.Authorization;
 using CoreOSR.Employees.Dto;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace CoreOSR.Employees
 {
-    [AbpAuthorize]
+    //[AbpAuthorize]
+    [AbpAuthorize(AppPermissions.Pages_Datagrid)]
     public class EmployeeAppService : CoreOSRAppServiceBase, IEmployeeAppService
     {
         private readonly IEmployeeManager _employeeManager;
@@ -18,17 +20,11 @@ namespace CoreOSR.Employees
         {
             _employeeManager = employeeManager;
         }
-        //public async Task<String> AddEmployee()
-        //{
-        //    return "Success";
-        //}
-        public async Task<Boolean> AddEmployee(EmployeeInput input)
+        public async Task<long> AddEmployee(EmployeeInput input)
         {
             var employee = ObjectMapper.Map<Employee>(input);
 
-            await _employeeManager.CreateEmployeeAsync(employee);
-
-            return true;
+            return await _employeeManager.CreateEmployeeAsync(employee);
         }
         public async Task<List<EmployeeListDto>> GetEmployees()
         {
@@ -39,6 +35,16 @@ namespace CoreOSR.Employees
                 return employeeListDtos;
             }
             return null;
+        }
+        public async Task<long> UpdateEmployee(EmployeeInput input)
+        {
+            var employee = ObjectMapper.Map<Employee>(input);
+
+            return await _employeeManager.UpdateEmployeeAsync(employee);
+        }
+        public async Task<Boolean> DeleteEmployee(int employeeId)
+        {
+            return await _employeeManager.DeleteEmployeeAsync(employeeId);
         }
     }
 }

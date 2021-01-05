@@ -11,8 +11,9 @@ namespace CoreOSR.Employees
 {
     public interface IEmployeeAppService : IApplicationService
     {
-        //Task<String> AddEmployee();
-        Task<Boolean> AddEmployee(EmployeeInput input);
+        Task<long> AddEmployee(EmployeeInput input);
         Task<List<EmployeeListDto>> GetEmployees();
+        Task<long> UpdateEmployee(EmployeeInput input);
+        Task<Boolean> DeleteEmployee(int employeeId);
     }
 }
