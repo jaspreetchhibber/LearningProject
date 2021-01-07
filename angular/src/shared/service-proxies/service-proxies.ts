@@ -9168,6 +9168,7 @@ export class UserServiceProxy {
      * @return Success
      */
     getUsers(filter: string | null | undefined, permissions: string[] | null | undefined, role: number | null | undefined, onlyLockedUsers: boolean | null | undefined, sorting: string | null | undefined, maxResultCount: number | null | undefined, skipCount: number | null | undefined): Observable<PagedResultDtoOfUserListDto> {
+        debugger;
         let url_ = this.baseUrl + "/api/services/app/User/GetUsers?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -9194,6 +9195,7 @@ export class UserServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            debugger;
             return this.processGetUsers(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -10065,6 +10067,212 @@ export class WebLogServiceProxy {
         return _observableOf<FileDto>(<any>null);
     }
 }
+
+@Injectable()
+export class DatagridServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+    getEmployees(): Observable<PagedResultDtoOfEmployeeListDto> {
+        debugger;
+        let url_ = this.baseUrl + "/api/services/app/Employee/GetEmployees";
+        url_ = url_.replace(/[?&]$/, "");
+      
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+      
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+          debugger;
+            return this.processGetEmployees(response_);
+        })).pipe(_observableCatch((response_: any) => {    
+        debugger;
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEmployees(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(response_);
+        }));
+      }
+      protected processGetEmployees(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeeListDto> {
+        debugger;
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+      
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultDtoOfEmployeeListDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfEmployeeListDto>(<any>null);
+      }
+}
+
+export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmployeeListDto {
+    totalCount!: number | undefined;
+    items!: EmployeeModel[] | undefined;
+  
+    constructor(data?: IPagedResultDtoOfEmployeeListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+  
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(EmployeeModel.fromJS(item));
+            }
+        }
+    }
+  
+    static fromJS(data: any): PagedResultDtoOfEmployeeListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfEmployeeListDto();
+        result.init(data);
+        return result;
+    }
+  
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+  }
+  
+  export interface IPagedResultDtoOfEmployeeListDto {
+    totalCount: number | undefined;
+    items: EmployeeModel[] | undefined;
+  }
+
+  export class EmployeeModel implements IEmployeeModel {
+    Id!: number | undefined;
+    FullName!: String | undefined;
+    Position!: String | undefined;
+    TitleOfCourtesy!: String | undefined;
+    BirthDate!: String | undefined;
+    HireDate!: String | undefined;
+    Address!: String | undefined;
+    City!: String | undefined;
+    Region!: String | undefined;
+    PostalCode!: String | undefined;
+    Country!: String | undefined;
+    HomePhone!: String | undefined;
+    Extension!: String | undefined;
+    Photo!: String | undefined;
+    Notes!: String | undefined;
+    ReportsTo!: Number | undefined;
+  
+    constructor(data?: IEmployeeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+  
+    init(data?: any) {
+        if (data) {
+            this.Id=data["Id"];
+            this.FullName=data["FullName"];
+            this.Position=data["Position"];
+            this.TitleOfCourtesy=data["TitleOfCourtesy"];
+            this.BirthDate=data["BirthDate"];
+            this.HireDate=data["HireDate"];
+            this.Address=data["Address"];
+            this.City=data["City"];
+            this.Region=data["Region"];
+            this.PostalCode=data["PostalCode"];
+            this.Country=data["Country"];
+            this.HomePhone=data["HomePhone"];
+            this.Extension=data["Extension"];
+            this.Photo=data["Photo"];
+            this.Notes=data["Notes"];
+            this.ReportsTo=data["ReportsTo"];
+        }
+    }
+  
+    static fromJS(data: any): EmployeeModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeModel();
+        result.init(data);
+        return result;
+    }
+  
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.Id;
+        data["FullName"] = this.FullName;
+        data["Position"] = this.Position;
+        data["TitleOfCourtesy"] = this.TitleOfCourtesy;
+        data["BirthDate"] = this.BirthDate;
+        data["HireDate"] = this.HireDate;
+        data["Address"] = this.Address;
+        data["City"] = this.City;
+        data["Region"] = this.Region;
+        data["PostalCode"] = this.PostalCode;
+        data["Country"] = this.Country;
+        data["HomePhone"] = this.HomePhone;
+        data["Extension"] = this.Extension;
+        data["Photo"] = this.Photo;
+        data["Notes"] = this.Notes;
+        data["ReportsTo"] = this.ReportsTo;
+        return data; 
+    }
+  }
+  
+  export interface IEmployeeModel {
+    Id: number | undefined;
+    FullName: String | undefined;
+    Position: String | undefined;
+    TitleOfCourtesy: String | undefined;
+    BirthDate: String | undefined;
+    HireDate: String | undefined;
+    Address: String | undefined;
+    City: String | undefined;
+    Region: String | undefined;
+    PostalCode: String | undefined;
+    Country: String | undefined;
+    HomePhone: String | undefined;
+    Extension: String | undefined;
+    Photo: String | undefined;
+    Notes: String | undefined;
+    ReportsTo: Number | undefined;
+  }
 
 export class IsTenantAvailableInput implements IIsTenantAvailableInput {
     tenancyName!: string;

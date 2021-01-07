@@ -88,10 +88,10 @@ namespace CoreOSR.Authorization
             administration.CreateChildPermission(AppPermissions.Pages_Administration_HangfireDashboard, L("HangfireDashboard"), multiTenancySides: _isMultiTenancyEnabled ? MultiTenancySides.Host : MultiTenancySides.Tenant);
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Host_Dashboard, L("Dashboard"), multiTenancySides: MultiTenancySides.Host);
 
-            pages.CreateChildPermission(AppPermissions.Pages_Datagrid, L("Datagrid"));
-            users.CreateChildPermission(AppPermissions.Pages_Datagrid_Create, L("CreatingNewEmployee"));
-            users.CreateChildPermission(AppPermissions.Pages_Datagrid_Edit, L("EditingEmployee"));
-            users.CreateChildPermission(AppPermissions.Pages_Datagrid_Delete, L("DeletingEmployee"));
+            var employees = pages.CreateChildPermission(AppPermissions.Pages_Datagrid, L("Datagrid"));
+            employees.CreateChildPermission(AppPermissions.Pages_Datagrid_Create, L("CreatingNewEmployee"));
+            employees.CreateChildPermission(AppPermissions.Pages_Datagrid_Edit, L("EditingEmployee"));
+            employees.CreateChildPermission(AppPermissions.Pages_Datagrid_Delete, L("DeletingEmployee"));
         }
 
         private static ILocalizableString L(string name)

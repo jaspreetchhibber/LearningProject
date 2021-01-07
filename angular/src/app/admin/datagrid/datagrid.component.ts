@@ -2,6 +2,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import CustomStore from 'devextreme/data/custom_store';
 import { Employee,DatagridService } from './datagrid.service';
+import { DatagridServiceProxy } from '@shared/service-proxies/service-proxies';
 //import { EmployeeModel } from './Model/employeeModel';
 
 @Component({
@@ -28,13 +29,14 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
     }
 
     constructor(public service: DatagridService,
-      injector: Injector) {
+      injector: Injector,
+      private _datagridService: DatagridServiceProxy) {
         super(injector);
-        //this.employees = service.getEmployees();
+        //this.employees = _datagridService.getEmployees(),;
         this.selectEmployee = this.selectEmployee.bind(this);
         this.dataSource = new CustomStore({
           key: "Id",
-          load: () => service.getEmployees(),
+          load: () => _datagridService.getEmployees(),
           insert: (values) => this.service.saveEmployee(values),                    
           update: (key, values) => 
           this.service.updateEmployee(key,values),
