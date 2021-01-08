@@ -59,17 +59,29 @@ namespace CoreOSR.Employees
             }
         }
         [UnitOfWork]
-        public async Task<Boolean> DeleteEmployeeAsync(int employeeId)
+        public async Task<Boolean> DeleteEmployeeAsync(Employee employee)
         {
             try
             {
-                _employeeRepository.Delete(employeeId);
+                _employeeRepository.Delete(employee);
                 await CurrentUnitOfWork.SaveChangesAsync();
                 return true;
             }
             catch(Exception ex)
             {
                 return false;
+            }
+        }
+        [UnitOfWork]
+        public async Task<Employee> GetEmployeeByIdAsync(long employeeId)
+        {
+            try
+            {
+                return await _employeeRepository.GetAsync(employeeId);
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }

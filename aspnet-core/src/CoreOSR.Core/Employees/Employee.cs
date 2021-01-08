@@ -31,6 +31,6 @@ namespace CoreOSR.Employees
         public String Extension { get; set; }
         public String Photo { get; set; }
         public String Notes { get; set; }
-        public int ReportsTo { get; set; }
+        public int? ReportsTo { get; set; }
     }
 }

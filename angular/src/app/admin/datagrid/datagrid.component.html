@@ -2,10 +2,9 @@
 <div id="app-container">
 <dx-data-grid id="dataGrid" [dataSource]="dataSource"  
 [repaintChangesOnly]="true"
-keyExpr="EmployeeID"
+keyExpr="Id"
 [allowColumnReordering]="true"
 [columnAutoWidth]="true"
-(onSelectionChanged)="selectEmployee($event)"
 >
     <dxi-column dataField="FullName"
     [fixed]="true">
@@ -54,9 +53,6 @@ keyExpr="EmployeeID"
     </dxo-editing>
     <dxo-selection mode="single"></dxo-selection>
 </dx-data-grid>
-<p id="selected-employee" *ngIf="selectedEmployee">
-    Selected employee: {{ selectedEmployee.FullName }}
-</p>
 </div>
 
 

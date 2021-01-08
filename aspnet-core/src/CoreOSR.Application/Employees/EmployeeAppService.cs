@@ -23,28 +23,35 @@ namespace CoreOSR.Employees
         public async Task<long> AddEmployee(EmployeeInput input)
         {
             var employee = ObjectMapper.Map<Employee>(input);
-
+            
             return await _employeeManager.CreateEmployeeAsync(employee);
         }
-        public async Task<List<EmployeeListDto>> GetEmployees()
+        public async Task<PagedResultDto<EmployeeListDto>> GetEmployees()
         {
             var employees = await _employeeManager.GetEmployees();
             if (employees.Count() > 0)
             {
                 var employeeListDtos = ObjectMapper.Map<List<EmployeeListDto>>(employees);
-                return employeeListDtos;
+
+                return new PagedResultDto<EmployeeListDto>(
+                employeeListDtos.Count(),
+                employeeListDtos
+                );
             }
             return null;
         }
         public async Task<long> UpdateEmployee(EmployeeInput input)
         {
-            var employee = ObjectMapper.Map<Employee>(input);
+            //var employee = ObjectMapper.Map<Employee>(input);
+            var employee = await _employeeManager.GetEmployeeByIdAsync(input.Id);
 
+            ObjectMapper.Map(input, employee);
             return await _employeeManager.UpdateEmployeeAsync(employee);
         }
-        public async Task<Boolean> DeleteEmployee(int employeeId)
+        public async Task<Boolean> DeleteEmployee(EntityDto<long> employeeId)
         {
-            return await _employeeManager.DeleteEmployeeAsync(employeeId);
+            var employee = await _employeeManager.GetEmployeeByIdAsync(employeeId.Id);
+            return await _employeeManager.DeleteEmployeeAsync(employee);
         }
     }
 }

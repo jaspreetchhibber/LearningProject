@@ -10079,7 +10079,6 @@ export class DatagridServiceProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
     getEmployees(): Observable<PagedResultDtoOfEmployeeListDto> {
-        debugger;
         let url_ = this.baseUrl + "/api/services/app/Employee/GetEmployees";
         url_ = url_.replace(/[?&]$/, "");
       
@@ -10091,11 +10090,9 @@ export class DatagridServiceProxy {
             })
         };
       
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-          debugger;
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {          
             return this.processGetEmployees(response_);
-        })).pipe(_observableCatch((response_: any) => {    
-        debugger;
+        })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
                     return this.processGetEmployees(<any>response_);
@@ -10107,7 +10104,6 @@ export class DatagridServiceProxy {
         }));
       }
       protected processGetEmployees(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeeListDto> {
-        debugger;
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -10128,6 +10124,171 @@ export class DatagridServiceProxy {
         }
         return _observableOf<PagedResultDtoOfEmployeeListDto>(<any>null);
       }
+
+    /**
+     * @param model (optional) 
+     * @return Success
+     */
+    saveEmployee(model: EmployeeModel | null | undefined): Observable<EmployeeResultModel> {
+      let url_ = this.baseUrl + "/api/services/app/Employee/AddEmployee";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(model);
+
+      let options_ : any = {
+          body: content_,
+          observe: "response",
+          responseType: "blob",
+          headers: new HttpHeaders({
+              "Content-Type": "application/json", 
+              "Accept": "application/json"
+          })
+      };
+
+      return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        debugger;
+          return this.processSaveEmployee(response_);
+      })).pipe(_observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+              try {
+                  return this.processSaveEmployee(<any>response_);
+              } catch (e) {
+                  return <Observable<EmployeeResultModel>><any>_observableThrow(e);
+              }
+          } else
+              return <Observable<EmployeeResultModel>><any>_observableThrow(response_);
+      }));
+    }
+  protected processSaveEmployee(response: HttpResponseBase): Observable<EmployeeResultModel> {
+    const status = response.status;
+    const responseBlob = 
+        response instanceof HttpResponse ? response.body : 
+        (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+    let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+    if (status === 200) {
+        return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = EmployeeResultModel.fromJS(resultData200);
+        return _observableOf(result200);
+        }));
+    } else if (status !== 200 && status !== 204) {
+        return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }));
+    }
+    return _observableOf<EmployeeResultModel>(<any>null);
+  }
+
+updateEmployee(employeeId: number | 0 | undefined,model: EmployeeModel | null | undefined): Observable<EmployeeResultModel> {
+  debugger;
+let url_ = this.baseUrl + "/api/services/app/Employee/UpdateEmployee";
+url_ = url_.replace(/[?&]$/, "");
+
+model.Id=employeeId;
+const content_ = JSON.stringify(model);
+
+let options_ : any = {
+    body: content_,
+    observe: "response",
+    responseType: "blob",
+    headers: new HttpHeaders({
+        "Content-Type": "application/json", 
+        "Accept": "application/json"
+    })
+};
+        
+return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+  debugger;
+    return this.processUpdateEmployee(response_);
+})).pipe(_observableCatch((response_: any) => {
+  debugger;
+    if (response_ instanceof HttpResponseBase) {
+        try {
+            return this.processUpdateEmployee(<any>response_);
+        } catch (e) {
+            return <Observable<EmployeeResultModel>><any>_observableThrow(e);
+        }
+    } else
+        return <Observable<EmployeeResultModel>><any>_observableThrow(response_);
+}));
+}
+protected processUpdateEmployee(response: HttpResponseBase): Observable<EmployeeResultModel> {
+const status = response.status;
+const responseBlob = 
+  response instanceof HttpResponse ? response.body : 
+  (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+if (status === 200) {
+  return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+  let result200: any = null;
+  let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+  result200 = EmployeeResultModel.fromJS(resultData200);
+  return _observableOf(result200);
+  }));
+} else if (status !== 200 && status !== 204) {
+  return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+  return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }));
+}
+return _observableOf<EmployeeResultModel>(<any>null);
+}
+deleteEmployee(employeeId: number | 0 | undefined): Observable<EmployeeResultModel> {
+  debugger;
+let url_ = this.baseUrl + "/api/services/app/Employee/DeleteEmployee?";
+url_ += "Id=" + encodeURIComponent("" + employeeId) + "&"; 
+url_ = url_.replace(/[?&]$/, "");
+
+const content_ = JSON.stringify(employeeId);
+
+let options_ : any = {
+    body: content_,
+    observe: "response",
+    responseType: "blob",
+    headers: new HttpHeaders({
+        "Content-Type": "application/json", 
+        "Accept": "application/json"
+    })
+};
+
+return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+  debugger;
+    return this.processDeleteEmployee(response_);
+})).pipe(_observableCatch((response_: any) => {
+  debugger;
+    if (response_ instanceof HttpResponseBase) {
+        try {
+            return this.processDeleteEmployee(<any>response_);
+        } catch (e) {
+            return <Observable<EmployeeResultModel>><any>_observableThrow(e);
+        }
+    } else
+        return <Observable<EmployeeResultModel>><any>_observableThrow(response_);
+}));
+}
+protected processDeleteEmployee(response: HttpResponseBase): Observable<EmployeeResultModel> {
+const status = response.status;
+const responseBlob = 
+  response instanceof HttpResponse ? response.body : 
+  (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+if (status === 200) {
+  return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+  let result200: any = null;
+  let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+  result200 = EmployeeResultModel.fromJS(resultData200);
+  return _observableOf(result200);
+  }));
+} else if (status !== 200 && status !== 204) {
+  return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+  return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }));
+}
+return _observableOf<EmployeeResultModel>(<any>null);
+}
 }
 
 export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmployeeListDto {
@@ -10207,22 +10368,22 @@ export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmploye
   
     init(data?: any) {
         if (data) {
-            this.Id=data["Id"];
-            this.FullName=data["FullName"];
-            this.Position=data["Position"];
-            this.TitleOfCourtesy=data["TitleOfCourtesy"];
-            this.BirthDate=data["BirthDate"];
-            this.HireDate=data["HireDate"];
-            this.Address=data["Address"];
-            this.City=data["City"];
-            this.Region=data["Region"];
-            this.PostalCode=data["PostalCode"];
-            this.Country=data["Country"];
-            this.HomePhone=data["HomePhone"];
-            this.Extension=data["Extension"];
-            this.Photo=data["Photo"];
-            this.Notes=data["Notes"];
-            this.ReportsTo=data["ReportsTo"];
+            this.Id=data["id"];
+            this.FullName=data["fullName"];
+            this.Position=data["position"];
+            this.TitleOfCourtesy=data["titleOfCourtesy"];
+            this.BirthDate=data["birthDate"];
+            this.HireDate=data["hireDate"];
+            this.Address=data["address"];
+            this.City=data["city"];
+            this.Region=data["region"];
+            this.PostalCode=data["postalCode"];
+            this.Country=data["country"];
+            this.HomePhone=data["homePhone"];
+            this.Extension=data["extension"];
+            this.Photo=data["photo"];
+            this.Notes=data["notes"];
+            this.ReportsTo=data["reportsTo"];
         }
     }
   
@@ -10235,22 +10396,22 @@ export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmploye
   
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Id"] = this.Id;
-        data["FullName"] = this.FullName;
-        data["Position"] = this.Position;
-        data["TitleOfCourtesy"] = this.TitleOfCourtesy;
-        data["BirthDate"] = this.BirthDate;
-        data["HireDate"] = this.HireDate;
-        data["Address"] = this.Address;
-        data["City"] = this.City;
-        data["Region"] = this.Region;
-        data["PostalCode"] = this.PostalCode;
-        data["Country"] = this.Country;
-        data["HomePhone"] = this.HomePhone;
-        data["Extension"] = this.Extension;
-        data["Photo"] = this.Photo;
-        data["Notes"] = this.Notes;
-        data["ReportsTo"] = this.ReportsTo;
+        data["id"] = this.Id;
+        data["fullName"] = this.FullName;
+        data["position"] = this.Position;
+        data["titleOfCourtesy"] = this.TitleOfCourtesy;
+        data["birthDate"] = this.BirthDate;
+        data["hireDate"] = this.HireDate;
+        data["address"] = this.Address;
+        data["city"] = this.City;
+        data["region"] = this.Region;
+        data["postalCode"] = this.PostalCode;
+        data["country"] = this.Country;
+        data["homePhone"] = this.HomePhone;
+        data["extension"] = this.Extension;
+        data["photo"] = this.Photo;
+        data["notes"] = this.Notes;
+        data["reportsTo"] = this.ReportsTo;
         return data; 
     }
   }
@@ -10272,6 +10433,47 @@ export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmploye
     Photo: String | undefined;
     Notes: String | undefined;
     ReportsTo: Number | undefined;
+  }
+
+  export interface IEmployeeResultModel {
+    tenancyName: string;
+  }
+  
+  export class EmployeeResultModel implements IEmployeeResultModel {
+    tenantId!: number | undefined;
+    serverRootAddress!: string | undefined;
+  
+    constructor(data?: IEmployeeResultModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+    tenancyName: string;
+  
+    init(data?: any) {
+        debugger;
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.serverRootAddress = data["serverRootAddress"];
+        }
+    }
+  
+    static fromJS(data: any): EmployeeResultModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeResultModel();
+        result.init(data);
+        return result;
+    }
+  
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["serverRootAddress"] = this.serverRootAddress;
+        return data; 
+    }
   }
 
 export class IsTenantAvailableInput implements IIsTenantAvailableInput {

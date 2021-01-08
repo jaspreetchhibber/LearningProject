@@ -7,7 +7,7 @@ namespace CoreOSR.Employees.Dto
 {
     public class EmployeeInput //: PagedAndFilteredInputDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string FullName { get; set; }
 
         public string Position { get; set; }

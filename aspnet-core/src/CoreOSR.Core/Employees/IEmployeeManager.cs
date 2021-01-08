@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Services;
+﻿using Abp.Application.Services.Dto;
+using Abp.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace CoreOSR.Employees
         Task<long> CreateEmployeeAsync(Employee employee);
         Task<IQueryable<Employee>> GetEmployees();
         Task<long> UpdateEmployeeAsync(Employee employee);
-        Task<Boolean> DeleteEmployeeAsync(int employeeId);
+        Task<Boolean> DeleteEmployeeAsync(Employee employee);
+        Task<Employee> GetEmployeeByIdAsync(long employeeId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using CoreOSR.Employees.Dto;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace CoreOSR.Employees
     public interface IEmployeeAppService : IApplicationService
     {
         Task<long> AddEmployee(EmployeeInput input);
-        Task<List<EmployeeListDto>> GetEmployees();
+        Task<PagedResultDto<EmployeeListDto>> GetEmployees();
         Task<long> UpdateEmployee(EmployeeInput input);
-        Task<Boolean> DeleteEmployee(int employeeId);
+        Task<Boolean> DeleteEmployee(EntityDto<long> employeeId);
     }
 }
