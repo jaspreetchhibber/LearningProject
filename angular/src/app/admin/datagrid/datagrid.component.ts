@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import CustomStore from 'devextreme/data/custom_store';
+import CustomStore from '@node_modules/devextreme/data/custom_store';
 import { Employee,DatagridService } from './datagrid.service';
 import { DatagridServiceProxy } from '@shared/service-proxies/service-proxies';
 //import { EmployeeModel } from './Model/employeeModel';
@@ -35,8 +35,12 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
         //this.employees = _datagridService.getEmployees(),;
         this.selectEmployee = this.selectEmployee.bind(this);
         this.dataSource = new CustomStore({
-          key: "Id",
-          load: () => _datagridService.getEmployees(),
+          key: "id",
+          load: () => _datagridService.getEmployees().toPromise().then(response => {
+            return {
+                data: response
+              };
+        }),
           insert: (values) => this.service.saveEmployee(values),                    
           update: (key, values) => 
           this.service.updateEmployee(key,values),
