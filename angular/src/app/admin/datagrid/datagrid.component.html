@@ -28,16 +28,9 @@ keyExpr="Id"
     </dxi-column>
     <dxi-column dataField="City"></dxi-column>
     <dxi-column
-    dataField="Country"
-    sortOrder="asc"
-    [groupIndex]="0">
+    dataField="Country">
         <dxo-lookup [dataSource]="countryList" valueExpr="Name" displayExpr="Name"></dxo-lookup>
     </dxi-column>
-    <dxo-summary>
-        <dxi-group-item
-            summaryType="count">
-        </dxi-group-item>
-    </dxo-summary>
     <dxi-column dataField="Address"></dxi-column>
     <dxi-column dataField="HomePhone"></dxi-column>
     <dxi-column dataField="PostalCode" [visible]="false"></dxi-column>
