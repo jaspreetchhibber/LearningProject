@@ -42,7 +42,6 @@ namespace CoreOSR.Employees
         }
         public async Task<long> UpdateEmployee(EmployeeInput input)
         {
-            //var employee = ObjectMapper.Map<Employee>(input);
             var employee = await _employeeManager.GetEmployeeByIdAsync(input.Id);
 
             ObjectMapper.Map(input, employee);

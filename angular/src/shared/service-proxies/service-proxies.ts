@@ -9168,7 +9168,6 @@ export class UserServiceProxy {
      * @return Success
      */
     getUsers(filter: string | null | undefined, permissions: string[] | null | undefined, role: number | null | undefined, onlyLockedUsers: boolean | null | undefined, sorting: string | null | undefined, maxResultCount: number | null | undefined, skipCount: number | null | undefined): Observable<PagedResultDtoOfUserListDto> {
-        debugger;
         let url_ = this.baseUrl + "/api/services/app/User/GetUsers?";
         if (filter !== undefined)
             url_ += "Filter=" + encodeURIComponent("" + filter) + "&"; 
@@ -9195,7 +9194,7 @@ export class UserServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            debugger;
+
             return this.processGetUsers(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -10146,7 +10145,6 @@ export class DatagridServiceProxy {
       };
 
       return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-        debugger;
           return this.processSaveEmployee(response_);
       })).pipe(_observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
@@ -10182,7 +10180,6 @@ export class DatagridServiceProxy {
   }
 
 updateEmployee(employeeId: number | 0 | undefined,model: EmployeeModel | null | undefined): Observable<EmployeeResultModel> {
-  debugger;
 let url_ = this.baseUrl + "/api/services/app/Employee/UpdateEmployee";
 url_ = url_.replace(/[?&]$/, "");
 
@@ -10200,10 +10197,8 @@ let options_ : any = {
 };
         
 return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-  debugger;
     return this.processUpdateEmployee(response_);
 })).pipe(_observableCatch((response_: any) => {
-  debugger;
     if (response_ instanceof HttpResponseBase) {
         try {
             return this.processUpdateEmployee(<any>response_);
@@ -10236,7 +10231,6 @@ if (status === 200) {
 return _observableOf<EmployeeResultModel>(<any>null);
 }
 deleteEmployee(employeeId: number | 0 | undefined): Observable<EmployeeResultModel> {
-  debugger;
 let url_ = this.baseUrl + "/api/services/app/Employee/DeleteEmployee?";
 url_ += "Id=" + encodeURIComponent("" + employeeId) + "&"; 
 url_ = url_.replace(/[?&]$/, "");
@@ -10254,10 +10248,8 @@ let options_ : any = {
 };
 
 return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-  debugger;
     return this.processDeleteEmployee(response_);
 })).pipe(_observableCatch((response_: any) => {
-  debugger;
     if (response_ instanceof HttpResponseBase) {
         try {
             return this.processDeleteEmployee(<any>response_);
@@ -10454,7 +10446,6 @@ export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmploye
     tenancyName: string;
   
     init(data?: any) {
-        debugger;
         if (data) {
             this.tenantId = data["tenantId"];
             this.serverRootAddress = data["serverRootAddress"];

@@ -1,10 +1,11 @@
 
 <div id="app-container">
 <dx-data-grid id="dataGrid" [dataSource]="dataSource"  
-[repaintChangesOnly]="true"
 keyExpr="Id"
 [allowColumnReordering]="true"
+(onEditingStart)="onEditingStart($event)"
 [columnAutoWidth]="true"
+[repaintChangesOnly]="true"
 >
     <dxi-column dataField="FullName"
     [fixed]="true">
@@ -46,12 +47,11 @@ keyExpr="Id"
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-editing
-        mode="popup"
+        mode="popup"        
         [allowUpdating]="true"
         [allowDeleting]="true"
         [allowAdding]="true">
     </dxo-editing>
-    <dxo-selection mode="single"></dxo-selection>
 </dx-data-grid>
 </div>
 
