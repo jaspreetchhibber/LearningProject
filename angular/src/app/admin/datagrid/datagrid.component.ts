@@ -14,6 +14,7 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
   events: Array<string> = [];
   dataSource: any;
   editRowKey: number;
+  countryList: Country[];
   collapsed = false;
     contentReady = (e) => {
         if(!this.collapsed) {
@@ -41,8 +42,7 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
                 data: response
               };
         }),                    
-          update: async (key, values) => this.Update(key,values)
-          ,
+          update: async (key, values) => this.Update(key,values),
           remove: (key) => 
           _datagridService.deleteEmployee(key).toPromise().then(response => {
             return {
@@ -50,6 +50,7 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
               };
           })
         })
+        this.countryList=countries;
     }
   ngOnInit(): void {
     
@@ -95,3 +96,17 @@ export class DatagridComponent extends AppComponentBase implements OnInit {
     this.editRowKey = e.key;
   }
 }
+export class Country {
+  ID: number;
+  Name: string;
+}
+let countries: Country[] = [{
+  "ID": 1,
+  "Name": "America"
+}, {
+  "ID": 2,
+  "Name": "Australia"
+}, {
+  "ID": 3,
+  "Name": "India"
+}];

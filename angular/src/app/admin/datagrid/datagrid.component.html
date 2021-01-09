@@ -31,7 +31,7 @@ keyExpr="Id"
     dataField="Country"
     sortOrder="asc"
     [groupIndex]="0">
-        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxo-lookup [dataSource]="countryList" valueExpr="Name" displayExpr="Name"></dxo-lookup>
     </dxi-column>
     <dxo-summary>
         <dxi-group-item
